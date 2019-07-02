@@ -61,6 +61,7 @@ def on_high_B_thresh_trackbar(val):
     cv.setTrackbarPos(high_B_name, window_detection_name, high_B)
 
 def on_line_gap_thresh_trackbar(val):
+    global lineGap
     lineGap = val
     cv.setTrackbarPos(gapLine_name, window_detection_name, lineGap)
     
