@@ -6,7 +6,13 @@ video = cv.VideoCapture(videoName)
 
 minGapLine = 2
 maxGapLine = 300
+minHthreshold = 2
+maxHthreshold =100
+hThreshold = minHthreshold
 lineGap = minGapLine
+minVitesseVideo = 1
+maxVitesseVideo = 200
+vitesseVideo = maxVitesseVideo
 max_value = 255
 low_R = 0
 low_G = 0
@@ -23,6 +29,8 @@ high_R_name = 'High R'
 high_G_name = 'High G'
 high_B_name = 'High B'
 gapLine_name = "Gap Line"
+hThreshold_name = "H threshold"
+vitesseVideo_name = "V Speed"
 def on_low_R_thresh_trackbar(val):
     global low_R
     global high_R
@@ -64,6 +72,16 @@ def on_line_gap_thresh_trackbar(val):
     global lineGap
     lineGap = val
     cv.setTrackbarPos(gapLine_name, window_detection_name, lineGap)
+
+def on_h_threshold_thresh_trackbar(val):
+    global hThreshold
+    hThreshold = val
+    cv.setTrackbarPos(hThreshold_name, window_detection_name, hThreshold)
+
+def on_vitesse_thresh_trackbar(val):
+    global vitesseVideo
+    vitesseVideo = val
+    cv.setTrackbarPos(vitesseVideo_name, window_detection_name, vitesseVideo)
     
 #parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
 #parser.add_argument('--camera', help='Camera devide number.', default=0, type=int)
@@ -78,6 +96,8 @@ cv.createTrackbar(high_G_name, window_detection_name , high_G, max_value, on_hig
 cv.createTrackbar(low_B_name, window_detection_name , low_B, max_value, on_low_B_thresh_trackbar)
 cv.createTrackbar(high_B_name, window_detection_name , high_B, max_value, on_high_B_thresh_trackbar)
 cv.createTrackbar(gapLine_name, window_detection_name , minGapLine, maxGapLine, on_line_gap_thresh_trackbar)
+cv.createTrackbar(hThreshold_name, window_detection_name , minHthreshold, maxHthreshold, on_h_threshold_thresh_trackbar)
+cv.createTrackbar(vitesseVideo_name, window_detection_name , minVitesseVideo, maxVitesseVideo, on_vitesse_thresh_trackbar)
 
 while True:
    ret, orig_frame = video.read()
@@ -93,7 +113,7 @@ while True:
    mask = cv.inRange(hsv, low_yellow, up_yellow)
    #mask = cv.inRange(hsv, low_white, up_white)
    edges = cv.Canny(mask, 75, 150)
-   lines = cv.HoughLinesP(edges, 1, np.pi/180, 50, maxLineGap=lineGap)
+   lines = cv.HoughLinesP(edges, 1, np.pi/180, hThreshold, maxLineGap=lineGap)
    if lines is not None:
       for line in lines:
           x1, y1, x2, y2 = line[0]
@@ -103,7 +123,7 @@ while True:
    cv.imshow(window_detection_name, frame_threshold)
    cv.imshow("edges", edges)
 
-   key = cv.waitKey(145)
+   key = cv.waitKey(vitesseVideo)
    if key == 27:
        break
 video.release()
